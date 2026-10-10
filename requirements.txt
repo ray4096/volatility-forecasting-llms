@@ -8,4 +8,5 @@ statsmodels
 arch
 yfinance
 jupyter
-
+nltk
+requests
