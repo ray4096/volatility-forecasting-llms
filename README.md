@@ -51,8 +51,8 @@ The folders contain the datasets, analysis notebooks, Python code, figures, eval
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/volatility-forecasting-with-llms.git
-cd volatility-forecasting-with-llms
+git clone https://github.com/ray4096/volatility-forecasting-llms.git
+cd volatility-forecasting-llms
 ```
 
 ### 2. Set up a Python environment
