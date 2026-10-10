@@ -35,13 +35,9 @@ Forecasting performance is assessed using quantitative evaluation metrics. The e
 ```text
 volatility-forecasting-with-llms/
 ├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── sample/
 ├── images/
 ├── notebooks/
 ├── results/
-├── src/
 ├── thesis/
 ├── .gitignore
 ├── README.md
