@@ -125,11 +125,6 @@ A license will be specified if and when the repository owner chooses to grant re
 - Python 3.10 or newer
 - pip
 
-### Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
 
 ### Run the notebooks
 
