@@ -117,3 +117,21 @@ This repository is intended for academic and research purposes. It does not cons
 ## License
 
 A license will be specified if and when the repository owner chooses to grant reuse permissions. Third-party datasets, news content, and other copyrighted materials remain subject to their respective terms.
+
+
+## Installation
+
+### Requirements
+- Python 3.10 or newer
+- pip
+
+### Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run the notebooks
+
+Open the notebooks in the `notebooks/` folder using Jupyter Notebook or JupyterLab.
+
