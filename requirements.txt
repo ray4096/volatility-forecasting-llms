@@ -1,0 +1,13 @@
+yfinance
+pandas
+numpy
+scipy
+statsmodels
+arch
+requests
+lxml
+huggingface_hub
+transformers
+torch
+joblib
+matplotlib
