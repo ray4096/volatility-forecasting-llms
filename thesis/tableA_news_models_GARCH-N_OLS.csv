@@ -1,0 +1,8 @@
+,Main (evaluation 2018 - May 2020),Main (evaluation 2018 - May 2020),Main (evaluation 2018 - May 2020),Robustness (evaluation 2023),Robustness (evaluation 2023),Robustness (evaluation 2023)
+,QLIKE,p vs. baseline,p vs. recalibrated,QLIKE,p vs. baseline,p vs. recalibrated
+Baseline,2.223,,,1.9975,,
+Recalibrated baseline,2.2301,0.1516,,2.0085,0.1336,
+News intensity,2.2414,0.1516,0.3221,1.9972,0.98,0.1045
+News intensity + tone,2.2371,0.2847,0.552,1.9989,0.8942,0.1601
+All headlines (unfiltered),2.2305,0.552,0.9724,1.9953,0.8257,0.0148
+Extra one-day lag,2.2322,0.1066,0.4582,2.0097,0.1072,0.2583

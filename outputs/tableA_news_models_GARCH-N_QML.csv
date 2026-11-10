@@ -1,0 +1,8 @@
+,Main sample,Main sample,Main sample,Robustness sample,Robustness sample,Robustness sample
+,QLIKE,p (baseline),p (recalibrated),QLIKE,p (baseline),p (recalibrated)
+Baseline,2.223,,,1.9975,,
+Recalibrated baseline,2.2301,0.1517,,2.0085,0.1336,
+News intensity,2.2209,0.8316,0.2761,1.9955,0.8448,0.0357
+News intensity + tone,2.218,0.6339,0.1798,1.9971,0.9669,0.0634
+All headlines (unfiltered),2.2167,0.5472,0.0624,1.9952,0.813,0.0071
+Extra one-day lag,2.2329,0.0826,0.3362,2.0098,0.1039,0.2306

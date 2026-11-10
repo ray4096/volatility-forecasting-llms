@@ -1,0 +1,89 @@
+% =====================================================================
+\section{Literature Review}\label{sec:literature}
+% =====================================================================
+This chapter brings together the studies that shape the theoretical and methodological foundation of this thesis. Rather than listing papers one by one, the review follows a natural progression: it starts with the statistical models that have long dominated volatility forecasting, moves through the growing use of text-based methods in finance, and arrives at recent efforts to bring language models into the picture. The aim is twofold: to make the case for incorporating textual information into volatility forecasts, and to identify the earlier work on which the empirical approach of this thesis builds.
+
+\subsection{Volatility Modelling: From ARCH to GARCH}\label{sec:lit-volatility}
+The study of time-varying risk in financial markets began in earnest once researchers moved past the assumption that variance is constant over time. \textcite{mandelbrot1963} and \textcite{fama1965} had already documented that financial returns have fat tails and that large price changes tend to cluster, but there was no statistical framework to capture these patterns until \textcite{engle1982} introduced the Autoregressive Conditional Heteroscedasticity (ARCH) model. Working with UK inflation data, Engle showed that the conditional variance of a time series can be modelled as a function of past squared residuals. This gave researchers a formal way to account for what practitioners had long observed: volatility comes in waves, with calm periods followed by turbulent ones. The importance of this idea was recognised with the Nobel Memorial Prize in Economic Sciences in 2003.
+
+Practical applications of the ARCH model, however, required many lag terms to capture the strong persistence of volatility in financial data, which led to heavily parameterised specifications with numerous non-negativity constraints. \textcite{bollerslev1986} addressed this limitation with the Generalised ARCH (GARCH) model, which adds lagged conditional variances to the variance equation. The GARCH(1,1) specification provides a parsimonious yet effective description of volatility dynamics:
+\begin{equation}
+  \sigma^2_t = \omega + \alpha\,\varepsilon^2_{t-1} + \beta\,\sigma^2_{t-1},
+  \label{eq:garch}
+\end{equation}
+where $\omega > 0$ is a constant, $\alpha \geq 0$ measures how strongly the conditional variance reacts to the most recent squared innovation $\varepsilon^2_{t-1}$, and $\beta \geq 0$ measures how persistent the conditional variance is. If $\alpha + \beta < 1$, the variance process is mean-reverting and its unconditional level equals $\omega / (1 - \alpha - \beta)$. As \textcite{engle2001} emphasises in his survey, the sum $\alpha + \beta$ is typically close to one for financial returns, which means that volatility shocks decay only slowly.
+
+Many extensions followed, most notably asymmetric models that allow negative returns to raise volatility more than positive returns of the same size: the EGARCH model of \textcite{nelson1991} and the GJR-GARCH model of \textcite{glosten1993}. Despite this proliferation of variants, the simple GARCH(1,1) has proven remarkably difficult to outperform out of sample. \textcite{hansen2005} compare 330 ARCH-type models on DM--USD exchange rates and IBM stock returns, using the Superior Predictive Ability test to guard against data snooping. For exchange rates, no model beats GARCH(1,1); for equity returns, models that capture the leverage effect perform better, but GARCH(1,1) remains highly competitive. For this thesis, this sets the benchmark: any news-based improvement has to clear a genuinely high bar.
+
+The Exponentially Weighted Moving Average (EWMA) model of the RiskMetrics framework \parencite{riskmetrics1996} offers an even simpler alternative. It reduces volatility forecasting to a single decay factor $\lambda$ and effectively imposes the integrated GARCH restriction $\alpha + \beta = 1$. With the standard daily value $\lambda = 0.94$, about 6\% of the weight goes to the most recent squared return and 94\% to the previous variance estimate. Theoretically, this implies that variance shocks never die out, which conflicts with the mean reversion of volatility. In practice, EWMA remains widely used because it is easy to implement, fast to compute and adequate for many day-to-day risk management purposes.
+
+\subsection{The Textual Turn: Dictionaries and Market Sentiment}\label{sec:lit-text}
+GARCH-type models capture the persistence of volatility well, but they have a blind spot: they cannot know why a shock happens. The variance equation looks only backwards, at past returns and past variances. When something important happens, such as an unexpected earnings announcement, a regulatory decision or a geopolitical event, the model can react only after the shock has appeared in returns.
+
+This limitation motivated researchers to treat news and text as measurable inputs rather than background context. \textcite{tetlock2007} put this idea on a solid empirical footing. Analysing the tone of the Wall Street Journal's ``Abreast of the Market'' column, he finds that high media pessimism predicts downward pressure on prices followed by a reversal, and that unusually high or low pessimism predicts high trading volume. The news therefore contained information about market behaviour that price data alone did not reveal.
+
+\textcite{loughran2011} then showed that general-purpose sentiment dictionaries such as the Harvard-IV word list are poorly suited to financial text. In a large sample of 10-K filings, almost three quarters of the words classified as negative by the Harvard dictionary are not negative in a financial context; examples include ``tax'', ``cost'', ``capital'', ``board'' and ``liability''. Their finance-specific word lists have since become the standard tool for dictionary-based sentiment analysis in finance.
+
+\textcite{jegadeesh2013} went a step further with their ``word power'' approach. Their key insight is that not all sentiment words matter equally: instead of weighting all positive or negative words the same, they infer the weight of each word from the market's reaction to the documents that contain it. This moved the field towards data-driven methods and showed that pre-defined dictionaries, however carefully constructed, have limits.
+
+The effect of news on markets also depends on the economic environment. \textcite{cakan2012} finds that US unemployment announcements have no significant effect on stock returns but do affect stock market volatility, and that unemployment and inflation surprises move volatility more strongly during recessions than during expansions. This suggests that the information content of news may vary over time, which motivates evaluating news-based forecasts in more than one market regime.
+
+\subsection[The Language Model Revolution: Transformers and FinBERT]{The Language Model Revolution: Transformers, FinBERT and BloombergGPT}\label{sec:lit-llm}
+Dictionary methods have limits that refinement cannot fully overcome: they ignore context, struggle with ambiguity and negation, and cannot capture complex semantic relationships. The breakthrough came with the Transformer architecture of \textcite{vaswani2017}. Its self-attention mechanism relates every word of a text to every other word, regardless of their distance, instead of processing words sequentially as earlier recurrent neural networks did. Virtually all subsequent language models, including BERT, GPT and their financial variants, build on this architecture.
+
+The application of Transformer models to finance has followed two complementary paths. The first adapts general-purpose pre-trained models to financial tasks. FinBERT \parencite{araci2019} builds on BERT \parencite{devlin2019}, which learns contextual word representations by predicting masked words from both their left and right context. FinBERT continues this pre-training on a corpus of financial news and is then fine-tuned to classify financial sentences as positive, negative or neutral, outperforming earlier approaches on financial sentiment benchmarks. The model is publicly available through ProsusAI and is used in this thesis.
+
+The second path trains large models specifically for finance. \textcite{wu2023} develop BloombergGPT, a 50-billion-parameter model trained on a combination of Bloomberg's proprietary financial data and general-purpose text. It outperforms comparable general models on financial tasks such as sentiment analysis, named entity recognition and question answering, while remaining competitive on general benchmarks; its proprietary nature, however, limits its use in academic research. \textcite{yang2023} respond with FinGPT, an open-source framework that adapts existing foundation models to finance using low-rank adaptation (LoRA), which updates only a small number of additional parameters and therefore makes domain adaptation far cheaper.
+
+Some of the most striking evidence on what language models can do in finance comes from \textcite{lopezlira2023}, who show that ChatGPT's assessment of news headlines predicts subsequent daily stock returns, outperforming traditional sentiment measures, and that more capable models predict better. The authors also point to an important caveat: because large language models are trained on vast amounts of internet text, they may have absorbed information about how markets later reacted to the news they are asked to evaluate. Backtests on historical data may therefore overstate their predictive ability.
+
+\subsection{Bridging the Gap: Text and Volatility}\label{sec:lit-bridge}
+Combining textual information with econometric volatility models is the natural meeting point of the two research streams reviewed above. A common approach is the GARCH-X model, which adds an exogenous variable $X_{t-1}$ to the variance equation:
+\begin{equation}
+  \sigma^2_t = \omega + \alpha\,\varepsilon^2_{t-1} + \beta\,\sigma^2_{t-1} + \gamma X_{t-1},
+\end{equation}
+where $\gamma$ measures the direct effect of the exogenous information on the conditional variance, separately from the autoregressive dynamics captured by $\alpha$ and $\beta$.
+
+\textcite{glasserman2019} provide evidence that is directly relevant to this thesis. Using a large archive of news articles about 50 large financial companies, they measure how ``unusual'' the language of current news is relative to past coverage and find that unusual news with negative sentiment predicts higher future volatility, whereas unusual positive news predicts lower volatility. The information is reflected more slowly in aggregate market volatility than in company-specific volatility. The text therefore carries information about future risk that is not contained in past prices.
+
+\textcite{ke2019} take a data-driven route with their SESTM method (Sentiment Extraction via Screening and Topic Modelling), applied to Dow Jones Newswires articles. Instead of relying on a pre-defined word list, the method learns which words are informative about returns directly from the data. The resulting sentiment scores predict returns better than commercial sentiment measures such as RavenPack. \textcite{gutierrez2024} approach the question from yet another angle and use a digital twin framework to measure stock market uncertainty from news headlines, adding to the evidence that text captures aspects of market risk that prices alone miss.
+
+\subsection{Critical Challenges in Financial Language Models}\label{sec:lit-challenges}
+Language models also raise challenges that matter for the design of this thesis and the interpretation of its results.
+
+The first is look-ahead bias through the training data. As discussed above, models trained on large internet corpora may already ``know'' how past events unfolded \parencite{lopezlira2023}. This thesis reduces this risk in two ways: FinBERT is a comparatively small model whose financial pre-training corpus predates the sample period, and every news feature enters the forecasts only on the trading day after the headline's publication date.
+
+The second is misclassification. A sentiment model can confidently assign a positive score to a headline that a human reader would consider ambiguous or irrelevant. In a volatility model, such errors add noise or bias to the forecasts. This thesis therefore filters out headlines that do not concern the tagged company and validates the filter on a random sample of headlines (Section~\ref{sec:data-news}).
+
+The third is interpretability. A GARCH coefficient has a clear meaning, whereas the reasons behind a language model's score are hard to trace. \textcite{cao2024} show that analysts who combine their own judgement with AI outperform both humans and AI alone, supporting a ``man + machine'' view in which models complement rather than replace human judgement. Interpretability also matters for regulation: supervisory guidance on model risk management, such as the US Federal Reserve's SR~11-7 \parencite{federalreserve2011}, requires that models used in banks be well understood, documented and validated.
+
+The fourth is separating signal from noise. The volume of financial news is enormous, and much of it carries little information about a particular company. Turning this flow into useful features requires careful choices about which headlines to include and how to aggregate them, which is why this thesis combines a relevance filter with simple, interpretable daily features.
+
+\subsection{The Research Gap}\label{sec:lit-gap}
+Taken together, the literature reveals a clear gap. The statistical toolkit for volatility forecasting is well established and hard to beat \parencite{engle1982,bollerslev1986,hansen2005}, and recent work shows that language models can extract valuable information from financial text \parencite{wu2023,lopezlira2023}. Comparatively few studies, however, feed language-model-based news features directly into volatility forecasts and test whether they improve on strong GARCH-type benchmarks out of sample. Most work on language models in finance focuses on return prediction, while studies that link text to volatility often rely on dictionary-based measures \parencite{loughran2011} or methods that do not use contextual language models \parencite{ke2019}.
+
+This thesis addresses this gap. It builds a complete pipeline from FinBERT sentiment scores to news-augmented volatility forecasts for 47 large US stocks, compares these forecasts with GARCH-type and EWMA benchmarks using formal tests of predictive accuracy, and repeats the analysis in a second, more recent period. The aim is not to oversell the potential of language models, but to provide a realistic assessment of where news-based information helps and where it does not. Table~\ref{tab:literature} summarises the studies that are most important for this thesis.
+
+\begin{table}[htbp]
+  \centering\small
+  \caption[Summary of key literature]{Key studies and their role in this thesis.}
+  \label{tab:literature}
+  \begin{adjustbox}{max width=\textwidth}
+  \begin{tabular}{lll}
+    \toprule
+    Study & Key finding & Role in this thesis \\
+    \midrule
+    \textcite{engle1982} & ARCH model & Foundation of volatility modelling \\
+    \textcite{bollerslev1986} & GARCH model & Baseline model \\
+    \textcite{glosten1993} & Asymmetric GARCH & Best-performing baseline \\
+    \textcite{hansen2005} & GARCH(1,1) hard to beat & Justifies benchmark choice \\
+    \textcite{tetlock2007} & Media tone predicts markets & Motivates use of news \\
+    \textcite{loughran2011} & Finance-specific word lists & Motivates domain-specific models \\
+    \textcite{araci2019} & FinBERT & Sentiment model used \\
+    \textcite{glasserman2019} & Unusual news predicts volatility & Links text to volatility \\
+    \textcite{lopezlira2023} & Language models predict returns & Motivates language-model features \\
+    \textcite{patton2011} & Robust loss functions & Forecast evaluation (QLIKE) \\
+    \bottomrule
+  \end{tabular}
+  \end{adjustbox}
+\end{table}

@@ -1,0 +1,26 @@
+# Large or redistributable-restricted files produced by the notebook
+*.csv.gz
+!data/features_daily.csv.gz
+All_external.csv
+nasdaq_exteral_data.csv
+news_*.csv
+prices_*.csv
+returns_daily.csv
+forecasts_*.csv.gz
+*.zip
+.ipynb_checkpoints/
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+.DS_Store
